@@ -21,6 +21,12 @@ func (it *Repository) List() ([]*entity.Task, error) {
 	return output, nil
 }
 
+func (it *Repository) Delete(id string) error {
+	// no existence check, even if the task does not exist, the result is the same.
+	delete(it.tasks, id)
+	return nil
+}
+
 func NewMemoryTaskRepository() task.Repository {
 	return &Repository{
 		tasks: map[string]*entity.Task{},

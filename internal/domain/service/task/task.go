@@ -16,6 +16,7 @@ func NewService(p *persistence.Persistence) Service {
 type Service interface {
 	CreateTask(name string) error
 	ListTasks() ([]*entity.Task, error)
+	DeleteTask(id string) error
 }
 
 type serviceImpl struct {
@@ -30,4 +31,8 @@ func (it *serviceImpl) CreateTask(name string) error {
 
 func (it *serviceImpl) ListTasks() ([]*entity.Task, error) {
 	return it.taskRepo.List()
+}
+
+func (it *serviceImpl) DeleteTask(id string) error {
+	return it.taskRepo.Delete(id)
 }

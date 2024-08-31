@@ -19,6 +19,7 @@ func Init(router *gin.Engine, svc *service.Service) {
 	taskApiGroup := router.Group("tasks")
 	taskApiGroup.GET("", handler.JsonWithoutPayload(listTasks))
 	taskApiGroup.POST("", handler.Json[dto.CreateTaskRequest](createTask))
+	taskApiGroup.DELETE(":taskID", handler.JsonWithoutPayload(deleteTask))
 }
 
 func listTasks(ctx context.Context, g *gin.Context) (any, error) {
@@ -29,5 +30,11 @@ func listTasks(ctx context.Context, g *gin.Context) (any, error) {
 
 func createTask(ctx context.Context, g *gin.Context, payload *dto.CreateTaskRequest) (any, error) {
 	err := taskService.CreateTask(payload.Name)
+	return nil, err
+}
+
+func deleteTask(ctx context.Context, g *gin.Context) (any, error) {
+	taskID := g.Param("taskID")
+	err := taskService.DeleteTask(taskID)
 	return nil, err
 }

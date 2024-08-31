@@ -7,4 +7,5 @@ import (
 type Repository interface {
 	Create(task *entity.Task) error
 	List() ([]*entity.Task, error)
+	Delete(id string) error
 }
