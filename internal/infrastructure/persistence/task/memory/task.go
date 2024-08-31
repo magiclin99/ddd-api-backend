@@ -3,11 +3,10 @@ package memory
 import (
 	"dddapib/internal/domain/model/entity"
 	"dddapib/internal/infrastructure/persistence/task"
-	"github.com/google/uuid"
 )
 
 type Repository struct {
-	tasks map[uuid.UUID]*entity.Task
+	tasks map[string]*entity.Task
 }
 
 func (it *Repository) Create(task *entity.Task) error {
@@ -24,6 +23,6 @@ func (it *Repository) List() ([]*entity.Task, error) {
 
 func NewMemoryTaskRepository() task.Repository {
 	return &Repository{
-		tasks: map[uuid.UUID]*entity.Task{},
+		tasks: map[string]*entity.Task{},
 	}
 }

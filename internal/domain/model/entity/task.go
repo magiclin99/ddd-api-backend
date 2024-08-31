@@ -12,7 +12,7 @@ var (
 )
 
 type Task struct {
-	ID     uuid.UUID  `json:"id"`
+	ID     string     `json:"id"`
 	Name   string     `json:"name"`
 	Status TaskStatus `json:"status"`
 }
@@ -27,7 +27,7 @@ func NewTask(name string) *Task {
 	}
 
 	return &Task{
-		ID:     uuid.New(),
+		ID:     "task-" + uuid.New().String(),
 		Name:   name,
 		Status: InProgressToDo,
 	}
