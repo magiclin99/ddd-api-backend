@@ -26,3 +26,8 @@ func InvalidRequest(msg string) *Error {
 		Message: msg,
 	}
 }
+
+var TaskNotFound = &Error{
+	Code:    "TASK-00001",
+	Message: "task not found",
+}

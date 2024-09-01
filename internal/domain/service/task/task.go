@@ -2,9 +2,12 @@
 package task
 
 import (
+	"dddapib/internal/domain/model/aperr"
 	"dddapib/internal/domain/model/entity"
 	"dddapib/internal/infrastructure/persistence"
+	persistenceErr "dddapib/internal/infrastructure/persistence/errors"
 	"dddapib/internal/infrastructure/persistence/task"
+	"errors"
 )
 
 func NewService(p *persistence.Persistence) Service {
@@ -14,9 +17,14 @@ func NewService(p *persistence.Persistence) Service {
 }
 
 type Service interface {
+	// CreateTask create a new task
 	CreateTask(name string) error
+	// ListTasks return all tasks
 	ListTasks() ([]*entity.Task, error)
+	// DeleteTask remove task by id
 	DeleteTask(id string) error
+	// CloseTask move task to done
+	CloseTask(id string) (*entity.Task, error)
 }
 
 type serviceImpl struct {
@@ -35,4 +43,26 @@ func (it *serviceImpl) ListTasks() ([]*entity.Task, error) {
 
 func (it *serviceImpl) DeleteTask(id string) error {
 	return it.taskRepo.Delete(id)
+}
+
+func (it *serviceImpl) CloseTask(id string) (*entity.Task, error) {
+	taskToClose, err := it.taskRepo.Get(id)
+	if err != nil {
+		return nil, toApError(err)
+	}
+
+	newStatus := taskToClose.Close()
+
+	result, err := it.taskRepo.UpdateStatus(id, newStatus)
+	return result, toApError(err)
+}
+
+// translate persistence error to application error
+func toApError(err error) error {
+	switch {
+	case errors.Is(err, persistenceErr.ErrNotFound):
+		return aperr.TaskNotFound
+	default:
+		return err
+	}
 }

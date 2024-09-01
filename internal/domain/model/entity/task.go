@@ -17,6 +17,11 @@ type Task struct {
 	Status TaskStatus `json:"status"`
 }
 
+func (t *Task) Close() TaskStatus {
+	t.Status = TaskStatusDone
+	return t.Status
+}
+
 // NewTask creates a new Task with initial status
 func NewTask(name string) *Task {
 
