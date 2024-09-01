@@ -1,7 +1,7 @@
 package aperr
 
 type Error struct {
-	Code    int
+	Code    string
 	Message string
 }
 
@@ -10,7 +10,7 @@ func (it *Error) Error() string {
 }
 
 var unexpectedServerError = &Error{
-	Code:    1000000, // convention =  component code(100) + error code(0000)
+	Code:    "C-00000",
 	Message: "",
 }
 
@@ -22,7 +22,7 @@ func UnexpectedServerError() *Error {
 
 func InvalidRequest(msg string) *Error {
 	return &Error{
-		Code:    2000001,
+		Code:    "C-00001",
 		Message: msg,
 	}
 }
