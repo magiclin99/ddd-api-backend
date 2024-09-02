@@ -16,7 +16,7 @@ func NewService(p *persistence.Persistence) Service {
 	}
 }
 
-//go:generate go run -mod=mod github.com/golang/mock/mockgen -destination=mock/task.go -source=task.go --package=mocktask
+//go:generate go run -mod=mod github.com/golang/mock/mockgen -destination=mock/task.go -source=task.go --package=mocktasksvc
 type Service interface {
 	// CreateTask create a new task
 	CreateTask(name string) (*entity.Task, error)
@@ -54,8 +54,8 @@ func (it *serviceImpl) CloseTask(id string) (*entity.Task, error) {
 
 	newStatus := taskToClose.Close()
 
-	result, err := it.taskRepo.UpdateStatus(id, newStatus)
-	return result, toApError(err)
+	_, err = it.taskRepo.UpdateStatus(id, newStatus)
+	return taskToClose, toApError(err)
 }
 
 // translate persistence error to application error

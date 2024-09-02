@@ -7,7 +7,7 @@ import (
 type TaskStatus int
 
 var (
-	InProgressToDo TaskStatus = 0
+	TaskStatusToDo TaskStatus = 0
 	TaskStatusDone TaskStatus = 1
 )
 
@@ -34,6 +34,6 @@ func NewTask(name string) *Task {
 	return &Task{
 		ID:     "task-" + uuid.New().String(),
 		Name:   name,
-		Status: InProgressToDo,
+		Status: TaskStatusToDo,
 	}
 }
