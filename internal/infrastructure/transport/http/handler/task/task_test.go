@@ -46,7 +46,6 @@ func TestUpdateTask(t *testing.T) {
 			method: "GET",
 			path:   "/tasks",
 			expectedResponse: &dto.ApiResponse{
-				Code: "",
 				Data: []*entity.Task{{"1", "1", 0}},
 			},
 			expectedStatus: 200,
@@ -61,7 +60,6 @@ func TestUpdateTask(t *testing.T) {
 			method: "PUT",
 			path:   "/tasks/task-001",
 			expectedResponse: &dto.ApiResponse{
-				Code: "",
 				Data: &entity.Task{"task-001", "unit-test", 1},
 			},
 			expectedStatus: 200,
@@ -158,7 +156,7 @@ func TestUpdateTask(t *testing.T) {
 				assert.Equal(t, toJson(tc.expectedResponse), recorder.Body.String())
 			}
 			if tc.errorCode != "" {
-				apiRsp := unmarshal[dto.ApiResponse](recorder.Body.Bytes())
+				apiRsp := unmarshal[dto.ApiError](recorder.Body.Bytes())
 				assert.Equal(t, tc.errorCode, apiRsp.Code)
 			}
 		})

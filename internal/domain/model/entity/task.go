@@ -11,9 +11,15 @@ var (
 	TaskStatusDone TaskStatus = 1
 )
 
+// Task represents a task in the system.
+//
+// @swagger:model Task
 type Task struct {
-	ID     string     `json:"id"`
-	Name   string     `json:"name"`
+	// The unique identifier of the task
+	ID string `json:"id"`
+	// Task name
+	Name string `json:"name"`
+	// 0 - ToDo, 1 - Done
 	Status TaskStatus `json:"status"`
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "dddapib/docs" // swag generated files
 	"dddapib/internal/app"
 )
 

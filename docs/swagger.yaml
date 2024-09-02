@@ -1,0 +1,113 @@
+definitions:
+  dto.ApiError:
+    properties:
+      code:
+        type: string
+      errorMsg:
+        type: string
+    type: object
+  dto.CreateTaskRequest:
+    properties:
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+    type: object
+  entity.Task:
+    properties:
+      id:
+        description: The unique identifier of the task
+        type: string
+      name:
+        description: Task name
+        type: string
+      status:
+        description: 0 - ToDo, 1 - Done
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Task'
+            type: array
+      summary: List all tasks
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task creation request
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Task'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ApiError'
+      summary: Create a new task
+      tags:
+      - tasks
+  /tasks/{taskID}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task successfully deleted (even the task does not exist)
+      summary: Delete a task
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Close a task immediately
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task successfully updated
+          schema:
+            $ref: '#/definitions/entity.Task'
+        "400":
+          description: TASK-00001 - Task not found
+          schema:
+            $ref: '#/definitions/dto.ApiError'
+      summary: Close a task immediately
+      tags:
+      - tasks
+swagger: "2.0"

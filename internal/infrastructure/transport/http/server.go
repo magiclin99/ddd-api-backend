@@ -6,6 +6,8 @@ import (
 	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server interface {
@@ -16,6 +18,8 @@ type Server interface {
 func NewServer(svc *service.Service) Server {
 	router := gin.Default()
 	router.Use(gin.Recovery())
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	task.Init(router, svc)
 	// add more API here

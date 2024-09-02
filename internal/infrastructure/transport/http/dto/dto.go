@@ -1,7 +1,7 @@
 package dto
 
-func NewApiError(code string, msg string) *ApiResponse {
-	return &ApiResponse{
+func NewApiError(code string, msg string) *ApiError {
+	return &ApiError{
 		Code:         code,
 		ErrorMessage: msg,
 	}
@@ -15,9 +15,12 @@ func NewApiOK(data any) *ApiResponse {
 }
 
 type ApiResponse struct {
-	Code         string `json:"code"` // empty for success, otherwise error
-	ErrorMessage string `json:"errorMsg,omitempty"`
-	Data         any    `json:"data,omitempty"`
+	Data any `json:"data,omitempty"`
+}
+
+type ApiError struct {
+	Code         string `json:"code"`
+	ErrorMessage string `json:"errorMsg"`
 }
 
 type CreateTaskRequest struct {
