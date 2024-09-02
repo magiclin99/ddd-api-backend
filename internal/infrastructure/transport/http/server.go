@@ -8,12 +8,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Serve(svc *service.Service) {
+type Server interface {
+	ListenAndServe() error
+	Close() error
+}
+
+func NewServer(svc *service.Service) Server {
 	router := gin.Default()
 	router.Use(gin.Recovery())
 
 	task.Init(router, svc)
 	// add more API here
 
-	endless.ListenAndServe(viper.GetString("infra.http.addr"), router)
+	return endless.NewServer(viper.GetString("infra.http.addr"), router)
 }

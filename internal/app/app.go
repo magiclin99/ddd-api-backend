@@ -20,7 +20,7 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 			initLogger()
 			svc := service.NewService(persistence.NewPersistence())
-			http.Serve(svc)
+			http.NewServer(svc).ListenAndServe()
 		},
 	}
 )

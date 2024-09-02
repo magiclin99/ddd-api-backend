@@ -30,8 +30,7 @@ func listTasks(ctx context.Context, g *gin.Context) (any, error) {
 }
 
 func createTask(ctx context.Context, g *gin.Context, payload *dto.CreateTaskRequest) (any, error) {
-	err := taskService.CreateTask(payload.Name)
-	return nil, err
+	return taskService.CreateTask(payload.Name)
 }
 
 func deleteTask(ctx context.Context, g *gin.Context) (any, error) {

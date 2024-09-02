@@ -16,9 +16,10 @@ func NewService(p *persistence.Persistence) Service {
 	}
 }
 
+//go:generate go run -mod=mod github.com/golang/mock/mockgen -destination=mock/task.go -source=task.go --package=mocktask
 type Service interface {
 	// CreateTask create a new task
-	CreateTask(name string) error
+	CreateTask(name string) (*entity.Task, error)
 	// ListTasks return all tasks
 	ListTasks() ([]*entity.Task, error)
 	// DeleteTask remove task by id
@@ -31,10 +32,10 @@ type serviceImpl struct {
 	taskRepo task.Repository
 }
 
-func (it *serviceImpl) CreateTask(name string) error {
+func (it *serviceImpl) CreateTask(name string) (*entity.Task, error) {
 	newTask := entity.NewTask(name)
 	err := it.taskRepo.Create(newTask)
-	return err
+	return newTask, err
 }
 
 func (it *serviceImpl) ListTasks() ([]*entity.Task, error) {
