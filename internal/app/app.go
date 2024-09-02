@@ -18,8 +18,11 @@ var (
 	rootCmd = &cobra.Command{
 		// main entry of this application
 		Run: func(cmd *cobra.Command, args []string) {
+
 			initLogger()
 			svc := service.NewService(persistence.NewPersistence())
+			slog.Info("app is ready to serve")
+
 			http.NewServer(svc).ListenAndServe()
 		},
 	}
