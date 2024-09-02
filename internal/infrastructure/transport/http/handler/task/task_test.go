@@ -13,8 +13,20 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
+
+type endpointTest struct {
+	name             string
+	method           string
+	path             string
+	input            any
+	expectedResponse any
+	expectedStatus   int
+	errorCode        string
+	setup            func(tc *endpointTest)
+}
 
 // test the spec of task API endpoint
 func TestUpdateTask(t *testing.T) {
@@ -28,16 +40,7 @@ func TestUpdateTask(t *testing.T) {
 		TaskService: mockTaskSvc,
 	})
 
-	testCases := []struct {
-		name             string
-		method           string
-		path             string
-		input            any
-		expectedResponse any
-		expectedStatus   int
-		errorCode        string
-		setup            func()
-	}{
+	testCases := []endpointTest{
 		{
 			name:   "list-task",
 			method: "GET",
@@ -47,7 +50,7 @@ func TestUpdateTask(t *testing.T) {
 				Data: []*entity.Task{{"1", "1", 0}},
 			},
 			expectedStatus: 200,
-			setup: func() {
+			setup: func(_ *endpointTest) {
 				mockTaskSvc.EXPECT().
 					ListTasks().
 					Return([]*entity.Task{{"1", "1", 0}}, nil)
@@ -62,7 +65,7 @@ func TestUpdateTask(t *testing.T) {
 				Data: &entity.Task{"task-001", "unit-test", 1},
 			},
 			expectedStatus: 200,
-			setup: func() {
+			setup: func(_ *endpointTest) {
 				mockTaskSvc.EXPECT().
 					CloseTask("task-001").
 					Return(&entity.Task{"task-001", "unit-test", 1}, nil)
@@ -73,7 +76,7 @@ func TestUpdateTask(t *testing.T) {
 			method:         "PUT",
 			path:           "/tasks/task-001",
 			expectedStatus: 400,
-			setup: func() {
+			setup: func(_ *endpointTest) {
 				mockTaskSvc.EXPECT().
 					CloseTask("task-001").
 					Return(nil, aperr.TaskNotFound)
@@ -86,7 +89,7 @@ func TestUpdateTask(t *testing.T) {
 			path:             "/tasks/task-001",
 			expectedResponse: &dto.ApiResponse{},
 			expectedStatus:   200,
-			setup: func() {
+			setup: func(_ *endpointTest) {
 				mockTaskSvc.EXPECT().
 					DeleteTask("task-001").
 					Return(nil)
@@ -101,19 +104,30 @@ func TestUpdateTask(t *testing.T) {
 				Data: &entity.Task{"task-001", "unit-test", 0},
 			},
 			expectedStatus: 200,
-			setup: func() {
+			setup: func(_ *endpointTest) {
 				mockTaskSvc.EXPECT().
 					CreateTask("unit-test").
 					Return(&entity.Task{"task-001", "unit-test", 0}, nil)
 			},
 		},
 		{
-			name:           "create-task-invalid-request",
+			name:           "create-task-no-name",
 			method:         "POST",
 			path:           "/tasks",
-			input:          &dto.CreateTaskRequest{}, // no name specified
+			input:          &dto.CreateTaskRequest{},
 			expectedStatus: 400,
 			errorCode:      aperr.InvalidRequest("").Code,
+		},
+		{
+			name:           "create-task-name-too-long",
+			method:         "POST",
+			path:           "/tasks",
+			expectedStatus: 400,
+			errorCode:      aperr.InvalidRequest("").Code,
+			setup: func(tc *endpointTest) {
+				longName := strings.Repeat("a", 101)
+				tc.input = &dto.CreateTaskRequest{Name: longName}
+			},
 		},
 	}
 
@@ -123,7 +137,7 @@ func TestUpdateTask(t *testing.T) {
 			// basic setup
 			recorder := httptest.NewRecorder()
 			if tc.setup != nil {
-				tc.setup()
+				tc.setup(&tc)
 			}
 
 			// prepare request

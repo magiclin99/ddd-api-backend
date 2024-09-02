@@ -24,13 +24,6 @@ func (t *Task) Close() TaskStatus {
 
 // NewTask creates a new Task with initial status
 func NewTask(name string) *Task {
-
-	switch {
-	case len(name) == 0:
-	case len(name) > 100:
-
-	}
-
 	return &Task{
 		ID:     "task-" + uuid.New().String(),
 		Name:   name,
