@@ -1,7 +1,4 @@
-.PHONY: init
-
-init:
-	go install github.com/golang/mock/mockgen@v1.6.0
+.PHONY: dockerRun
 
 dockerRun:
 	docker build -t ddd-api-backend .
